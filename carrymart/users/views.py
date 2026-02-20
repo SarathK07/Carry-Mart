@@ -19,7 +19,7 @@ class RegisterView(APIView):
 
 
 
-class DashboardView(APIView):
+class UserDetailsView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 

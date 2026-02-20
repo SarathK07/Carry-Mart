@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h3 class="mb-4">💳 Payment</h3>
+
+<div class="card shadow p-4 text-center">
+    <h5>Processing Payment...</h5>
+    <div class="spinner-border text-success mt-3"></div>
+</div>
+
+<script>
+const orderId = "{{ order_id }}";
+
+async function makePayment(){
+    const token = localStorage.getItem("access");
+
+    const response = await fetch("/payment/pay/" + orderId + "/", {
+        method: "POST",
+        headers:{
+            "Authorization":"Bearer " + token
+        }
+    });
+
+    const data = await response.json();
+
+    if(response.ok){
+        alert("Payment Successful!");
+        window.location.href = "/orders-page/";
+    }else{
+        alert(JSON.stringify(data));
+        window.location.href = "/orders-page/";
+    }
+}
+
+makePayment();
+</script>
+
+{% endblock %}

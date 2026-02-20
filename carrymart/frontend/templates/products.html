@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h3 class="mb-4">🛍 Our Products</h3>
+
+<div class="row" id="productsContainer"></div>
+
+<script>
+async function loadProducts(){
+    const token = localStorage.getItem("access");
+
+    if(!token){
+        window.location.href = "/login/";
+        return;
+    }
+
+    const response = await fetch("/products/", {
+        headers: {
+            "Authorization": "Bearer " + token
+        }
+    });
+
+    const products = await response.json();
+    productsContainer.innerHTML = "";
+
+    products.forEach(product => {
+
+        const imageUrl = product.image
+            ? product.image
+            : "https://via.placeholder.com/250";
+
+        productsContainer.innerHTML += `
+        <div class="col-md-3 mb-4">
+            <div class="card shadow h-100">
+                <img src="${imageUrl}" class="card-img-top"
+                     style="height:200px; object-fit:cover;">
+
+                <div class="card-body text-center">
+                    <h6>${product.name}</h6>
+                    <p class="text-success fw-bold">₹ ${product.price}</p>
+
+                    <button class="btn btn-dark w-100"
+                        onclick="addToCart(${product.id})">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+        </div>
+        `;
+    });
+}
+
+async function addToCart(productId){
+    const token = localStorage.getItem("access");
+
+    const response = await fetch("/cart/add/", {
+        method: "POST",
+        headers: {
+            "Authorization": "Bearer " + token,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            product_id: productId,   // ✅ correct
+            quantity: 1
+        })
+    });
+
+    const data = await response.json();
+
+    if(response.ok){
+        alert("Added to cart!");
+    }else{
+        alert(JSON.stringify(data));
+    }
+}
+
+loadProducts();
+</script>
+
+{% endblock %}

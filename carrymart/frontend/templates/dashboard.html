@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-lg p-4 text-center">
+            <h3 class="mb-4">User Dashboard</h3>
+            <div id="userDetails"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+async function getUserDetails(){
+    const token = localStorage.getItem("access");
+
+    if(!token){
+        window.location.href = "/login/";
+        return;
+    }
+
+    const response = await fetch("/users/userdetailsview/", {
+        headers: {
+            "Authorization": "Bearer " + token
+        }
+    });
+
+    const data = await response.json();
+
+    if(response.ok){
+        userDetails.innerHTML = `
+            <h5>Username: ${data.username}</h5>
+            <p>Email: ${data.email}</p>
+        `;
+    } else {
+        alert("Session expired");
+        window.location.href = "/login/";
+    }
+}
+
+getUserDetails();
+</script>
+
+{% endblock %}

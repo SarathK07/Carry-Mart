@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h3 class="mb-4">💳 Select Payment Method</h3>
+
+<div class="card shadow p-4 text-center">
+
+    <button class="btn btn-warning btn-lg mb-3 w-50"
+        onclick="cashOnDelivery()">
+        💰 Cash On Delivery
+    </button>
+
+</div>
+
+<script>
+async function cashOnDelivery(){
+    const token = localStorage.getItem("access");
+
+    const response = await fetch("/orders/place/", {
+        method: "POST",
+        headers: {
+            "Authorization": "Bearer " + token
+        }
+    });
+
+    const data = await response.json();
+
+    if(response.ok){
+        alert("Order placed successfully (Cash On Delivery)");
+        window.location.href = "/orders-page/";
+    }else{
+        alert(JSON.stringify(data));
+    }
+}
+</script>
+
+{% endblock %}

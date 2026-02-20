@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h3 class="mb-4">📦 My Orders</h3>
+
+<div id="ordersContainer"></div>
+
+<script>
+async function loadOrders(){
+    const token = localStorage.getItem("access");
+
+    const response = await fetch("/orders/my/", {
+        headers:{
+            "Authorization":"Bearer " + token
+        }
+    });
+
+    const orders = await response.json();
+    ordersContainer.innerHTML = "";
+
+    if(orders.length === 0){
+        ordersContainer.innerHTML =
+            "<p class='text-muted'>No orders yet.</p>";
+        return;
+    }
+
+    for(const order of orders){
+
+        let itemsHtml = "";
+
+        for(const item of order.items){
+
+            // 🔥 fetch product image separately
+            const productRes = await fetch(
+                "/products/products/" + item.product + "/", {
+                headers:{
+                    "Authorization":"Bearer " + token
+                }
+            });
+
+            const productData = await productRes.json();
+
+            const imageUrl = productData.image
+                ? productData.image
+                : "https://via.placeholder.com/100";
+
+            itemsHtml += `
+                <div class="d-flex align-items-center border-bottom py-3">
+
+                    <img src="${imageUrl}"
+                         width="100"
+                         height="100"
+                         style="object-fit:cover;"
+                         class="rounded me-3">
+
+                    <div>
+                        <h6 class="mb-1">${item.product_name}</h6>
+                        <p class="mb-1">Quantity: ${item.quantity}</p>
+                        <p class="mb-1 text-success">
+                            ₹ ${item.price}
+                        </p>
+                    </div>
+                </div>
+            `;
+        }
+
+        ordersContainer.innerHTML += `
+        <div class="card shadow mb-4">
+            <div class="card-body">
+
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h5>Order #${order.id}</h5>
+                        <p class="mb-1">
+                            Status:
+                            <span class="badge bg-primary">
+                                ${order.status}
+                            </span>
+                        </p>
+                        <p class="mb-1">
+                            Payment Mode:
+                            <strong>Cash On Delivery</strong>
+                        </p>
+                        <p class="text-muted">
+                            ${order.created_at}
+                        </p>
+                    </div>
+
+                    <div class="text-end">
+                        <h5 class="text-success">
+                            ₹ ${order.total_price}
+                        </h5>
+                    </div>
+                </div>
+
+                <hr>
+
+                ${itemsHtml}
+
+            </div>
+        </div>
+        `;
+    }
+}
+
+loadOrders();
+</script>
+
+{% endblock %}

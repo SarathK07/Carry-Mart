@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="card shadow p-4">
+    <h4>User Profile</h4>
+    <div id="profileData" class="mt-3"></div>
+</div>
+
+<script>
+async function loadProfile(){
+    const token = localStorage.getItem("access");
+
+    const response = await fetch("/users/userdetailsview/", {
+        headers: {
+            "Authorization": "Bearer " + token
+        }
+    });
+
+    const data = await response.json();
+
+    profileData.innerHTML = `
+        <p><strong>Username:</strong> ${data.username}</p>
+        <p><strong>Email:</strong> ${data.email}</p>
+    `;
+}
+
+loadProfile();
+</script>
+
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="text-center text-white">
+    <h1 class="display-4 fw-bold">Welcome to E-Shop</h1>
+    <p class="lead mt-3">Your One Stop Ecommerce Platform</p>
+
+    <div class="mt-4">
+        <a href="/register/" class="btn btn-warning btn-lg me-3">Get Started</a>
+        <a href="/login/" class="btn btn-outline-light btn-lg">Login</a>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-4">
+        <div class="card p-4 shadow">
+            <h5>🛍 Quality Products</h5>
+            <p>Browse our latest collections.</p>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card p-4 shadow">
+            <h5>🚚 Fast Delivery</h5>
+            <p>Quick and safe shipping.</p>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card p-4 shadow">
+            <h5>🔒 Secure Payment</h5>
+            <p>Safe & encrypted transactions.</p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
